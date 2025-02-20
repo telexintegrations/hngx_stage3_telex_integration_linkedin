@@ -8,7 +8,7 @@ integration_data = {
             "app_description": "Fetches the number of likes and reposts for a specified LinkedIn post at regular intervals.",  
             "app_logo": "https://iili.io/Jcshqe2.md.webp",  
             "app_name": "Post-Stats-Tracker",  
-            "app_url": "https://yourapp.com",  
+            "app_url": "http://54.242.222.191",  
             "background_color": "#0077B5"  
         },  
         "integration_category": "Monitoring & Logging",  
@@ -41,7 +41,7 @@ integration_data = {
                 "label": "Post URL",  
                 "type": "text",  
                 "required": True,  
-                "default": "https://www.linkedin.com/posts/example"  
+                "default": "https://www.linkedin.com/company/center-for-epidemiological-modelling-and-analysis-cema-africa/posts?lipi=urn%3Ali%3Apage%3Ad_flagship3_feed%3BCPf5AmcIScGS6G%2BYTXsUbw%3D%3D"  
             },  
             {  
                 "label": "Update Interval",  
@@ -76,7 +76,7 @@ integration_data = {
                 "options": ["User-1", "User-2", "User-3", "User-4"]  
             }  
         ],  
-        "tick_url": "https://telex.im/tick",  
-        "target_url": "https://api.telex.im/get_data"  
+        "tick_url": "http://54.242.222.191/tick",  
+        "target_url": ""  
     }  
 }
