@@ -6,6 +6,23 @@ from app.integration_info import integration_data  # Import the integration data
 
 app = FastAPI()  
 
+
+# Add CORS middleware  
+origins = [  
+    "https://telex.im/",  # Add your frontend URL here  
+    "https://www.linkedin.com/", 
+    "http://localhost:3000", 
+    # Include any other allowed origins as needed  
+]  
+
+app.add_middleware(  
+    CORSMiddleware,  
+    allow_origins=origins,  # Allows the specified origins  
+    allow_credentials=True,  
+    allow_methods=["*"],  # Allows all methods (GET, POST, etc.)  
+    allow_headers=["*"],  # Allows all headers  
+) 
+
 @app.on_event("startup")  
 async def startup_event():  
     LOAD_ENV()  # Load environment variables if needed  

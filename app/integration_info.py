@@ -2,7 +2,7 @@ integration_data = {
     "data": {  
         "date": {  
             "created_at": "2025-02-20",  
-            "updated_at": "2025-02-20"  
+            "updated_at": "2025-02-21"  
         },  
         "descriptions": {  
             "app_description": "Fetches the number of likes and reposts for a specified LinkedIn post at regular intervals.",  
@@ -47,7 +47,7 @@ integration_data = {
                 "label": "Update Interval",  
                 "type": "text",  
                 "required": True,  
-                "default": "0 */6 * * *"  
+                "default": "*/10 * * * *"  #10mn for testing then 6hours "0 */6 * * *"  
             },  
             {  
                 "label": "LinkedIn API Key",  
