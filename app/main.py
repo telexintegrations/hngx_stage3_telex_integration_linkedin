@@ -2,6 +2,8 @@ from fastapi import FastAPI, HTTPException
 from app.linkedin import fetch_linkedin_post_data  
 from app.schemas import Settings, Output 
 from app.config import LOAD_ENV  
+import os
+from dotenv import load_dotenv  
 from fastapi.middleware.cors import CORSMiddleware  
 from app.integration_info import integration_data  # Import the integration data  
 
@@ -25,9 +27,12 @@ app.add_middleware(
     allow_headers=["*"],  # Allows all headers  
 ) 
 
-@app.on_event("startup")  
-async def startup_event():  
-    LOAD_ENV()  # Load environment variables if needed  
+# Load environment variables from .env  
+load_dotenv()  
+
+# Access the API keys from environment variables  
+LINKEDIN_API_KEY = os.getenv("LINKEDIN_API_KEY")  
+LINKEDIN_API_SECRET = os.getenv("LINKEDIN_API_SECRET") 
 
 @app.get("/")  
 async def read_root():  
@@ -51,3 +56,6 @@ async def fetch_stats(settings: Settings):
     except ValueError as e:  
         raise HTTPException(status_code=500, detail=str(e))
     
+@app.get("/tick")  
+async def tick():  
+    return {"message": "Tick successful!"}
