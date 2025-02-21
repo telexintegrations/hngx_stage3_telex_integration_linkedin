@@ -2,6 +2,7 @@ from fastapi import FastAPI, HTTPException
 from app.linkedin import fetch_linkedin_post_data  
 from app.schemas import Settings, Output 
 from app.config import LOAD_ENV  
+from fastapi.middleware.cors import CORSMiddleware  
 from app.integration_info import integration_data  # Import the integration data  
 
 app = FastAPI()  
