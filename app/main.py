@@ -10,10 +10,11 @@ app = FastAPI()
 
 # Add CORS middleware  
 origins = [  
-    "https://telex.im/",  # Add your frontend URL here  
+    "https://telex.im/",   
     "https://www.linkedin.com/", 
     "http://localhost:3000", 
-    # Include any other allowed origins as needed  
+    "https://ping.telex.im/v1/webhooks/0195058a-1518-764a-9db0-506a93c57aca",
+     
 ]  
 
 app.add_middleware(  
@@ -49,3 +50,4 @@ async def fetch_stats(settings: Settings):
         return output  
     except ValueError as e:  
         raise HTTPException(status_code=500, detail=str(e))
+    
