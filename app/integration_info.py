@@ -76,7 +76,7 @@ integration_data = {
                 "options": ["User-1", "User-2", "User-3", "User-4"]  
             }  
         ],  
-        "tick_url": "https://hngx-stage3-telex-integration-linkedin.vercel.app/tick",  
+        "tick_url": f"{base_url}/tick",  
         "target_url": ""  
     }  
 }
