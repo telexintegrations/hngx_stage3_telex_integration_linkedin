@@ -39,9 +39,8 @@ LINKEDIN_API_SECRET = os.getenv("LINKEDIN_API_SECRET")
 @app.get("/")  
 async def read_root():  
     return {
-        "linkedin_api_key": LINKEDIN_API_KEY,  
-        "linkedin_api_secret": LINKEDIN_API_SECRET  
-        }  
+        "message": "Post-stats-tracker for Linkedin is working!"
+    }  
 
 @app.get("/integration-info")  
 async def get_integration_info():  
@@ -57,16 +56,46 @@ async def fetch_stats(settings: Settings):
         return output  
     except ValueError as e:  
         raise HTTPException(status_code=500, detail=str(e))
-    
-@app.get("/tick")  
-async def tick(settings: Settings):   
-    try:  
-        # Fetch stats for the specified post URL  
-        output = await fetch_stats(settings)  # Pass settings to fetch_stats  
-        return output  # Return the output of fetch_stats  
 
-    except HTTPException as e:  
-        raise e  # Re-raise the HTTPException for proper status code and detail  
 
-    except Exception as e:  
-        raise HTTPException(status_code=500, detail="Internal Server Error")
+# Function to send a notification to Telex webhook
+def notification(post_stats: Output):
+    """
+    Send a notification to the Telex webhook with the provided metrics data.
+    """
+    url = "https://ping.telex.im/v1/webhooks/0195058a-1518-764a-9db0-506a93c57aca"
+    payload = {
+        "event_name": "LinkedIn Post Monitoring",
+        "message": f"Likes: {post_stats.likes}, Reposts: {post_stats.reposts}",
+        "status": "success",
+    }
+    try:
+        # Send the POST request to Telex webhook
+        response = requests.post(
+            url,
+            json=payload,
+            headers={
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            }
+        )
+        # Check if the response is successful (status code 200)
+        if response.status_code != 200:
+            raise HTTPException(status_code=500, detail="Failed to send notification to Telex webhook")     
+        return response.json()  # Return the response content
+    except requests.exceptions.RequestException as e:
+        raise HTTPException(status_code=500, detail=f"Error sending notification: {e}")
+
+
+@app.post("/tick")
+async def tick(settings: Settings):
+    try:
+        # Fetch stats for the specified post URL
+        output = await fetch_stats(settings)  # Get the stats data from fetch_stats
+        # Send the notification with the metrics data (output is passed here)
+        notification(output)  # Send the notification with the fetched data
+        return output  # Return the fetched stats as the response
+    except HTTPException as e:
+        raise e  # Re-raise the HTTPException for proper status code and detail
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Internal Server Error: {str(e)}")
