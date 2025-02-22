@@ -2,13 +2,13 @@ integration_data = {
     "data": {  
         "date": {  
             "created_at": "2025-02-20",  
-            "updated_at": "2025-02-21"  
+            "updated_at": "2025-02-22"  
         },  
         "descriptions": {  
             "app_description": "Fetches the number of likes and reposts for a specified LinkedIn post at regular intervals.",  
             "app_logo": "https://iili.io/Jcshqe2.md.webp",  
             "app_name": "Post-Stats-Tracker",  
-            "app_url": "http://54.242.222.191",  
+            "app_url": "https://hngx-stage3-telex-integration-linkedin.vercel.app/",  
             "background_color": "#0077B5"  
         },  
         "integration_category": "Monitoring & Logging",  
@@ -76,7 +76,7 @@ integration_data = {
                 "options": ["User-1", "User-2", "User-3", "User-4"]  
             }  
         ],  
-        "tick_url": "http://54.242.222.191/tick",  
+        "tick_url": "https://dukpe.pythonanywhere.com/tick",  
         "target_url": ""  
     }  
 }
