@@ -1,4 +1,6 @@
-from fastapi import FastAPI, HTTPException  
+from fastapi import FastAPI, HTTPException 
+from fastapi.responses import JSONResponse  
+import requests   
 from app.linkedin import fetch_linkedin_post_data  
 from app.schemas import Settings, Output 
 from app.config import LOAD_ENV  
@@ -14,9 +16,9 @@ app = FastAPI()
 origins = [  
     "https://telex.im/",   
     "https://www.linkedin.com/", 
-    "http://localhost:3000", 
-    "https://ping.telex.im/v1/webhooks/0195058a-1518-764a-9db0-506a93c57aca",
-     
+    "https://staging.telex.im",
+    "http://telextest.im",
+    "http://staging.telextest.im"
 ]  
 
 app.add_middleware(  
@@ -57,5 +59,14 @@ async def fetch_stats(settings: Settings):
         raise HTTPException(status_code=500, detail=str(e))
     
 @app.get("/tick")  
-async def tick():  
-    return {"message": "Tick successful!"}
+async def tick(settings: Settings):   
+    try:  
+        # Fetch stats for the specified post URL  
+        output = await fetch_stats(settings)  # Pass settings to fetch_stats  
+        return output  # Return the output of fetch_stats  
+
+    except HTTPException as e:  
+        raise e  # Re-raise the HTTPException for proper status code and detail  
+
+    except Exception as e:  
+        raise HTTPException(status_code=500, detail="Internal Server Error")
