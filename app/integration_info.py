@@ -8,7 +8,7 @@ integration_data = {
             "app_description": "Fetches the number of likes and reposts for a specified LinkedIn post at regular intervals.",  
             "app_logo": "https://iili.io/Jcshqe2.md.webp",  
             "app_name": "Post-Stats-Tracker",  
-            "app_url": "https://hngx-stage3-telex-integration-linkedin.vercel.app/",  
+            "app_url": "https://hngx-stage3-telex-integration-linkedin-ac8r8216x.vercel.app/",  
             "background_color": "#0077B5"  
         },  
         "integration_category": "Monitoring & Logging",  
@@ -76,7 +76,7 @@ integration_data = {
                 "options": ["User-1", "User-2", "User-3", "User-4"]  
             }  
         ],  
-        "tick_url": "https://hngx-stage3-telex-integration-linkedin.vercel.app/tick",  
+        "tick_url": f"{base_url}/tick",  
         "target_url": ""  
     }  
 }
