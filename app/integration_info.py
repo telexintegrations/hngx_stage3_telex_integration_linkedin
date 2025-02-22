@@ -76,7 +76,7 @@ integration_data = {
                 "options": ["User-1", "User-2", "User-3", "User-4"]  
             }  
         ],  
-        "tick_url": f"{base_url}/tick",  
+        "tick_url": "https://dukpe.pythonanywhere.com/tick",  
         "target_url": ""  
     }  
 }
