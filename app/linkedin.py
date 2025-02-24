@@ -8,15 +8,17 @@ load_dotenv()
 
 # Asynchronous function to fetch LinkedIn post data
 async def fetch_linkedin_post_data(post_url: str) -> Output:
-    linkedin_api_key = os.getenv("LINKEDIN_API_KEY")
+    LINKEDIN_API_KEY = os.getenv("LINKEDIN_API_KEY")  
+    LINKEDIN_API_SECRET = os.getenv("LINKEDIN_API_SECRET") 
     
-    if not linkedin_api_key or not linkedin_api_secret:
+    if not LINKEDIN_API_KEY or not LINKEDIN_API_SECRET:
         raise HTTPException(status_code=500, detail="LinkedIn API credentials not found in environment variables.")
 
     headers = {
-        "Authorization": f"Bearer {linkedin_api_key}",
+        "Authorization": f"Bearer {LINKEDIN_API_KEY}",
         "Content-Type": "application/json"
     }
+    
 
     # Extract post ID from the URL (assuming it's in the standard format)
     post_id = post_url.split('/')[-2]  
