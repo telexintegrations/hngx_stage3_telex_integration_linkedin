@@ -10,8 +10,8 @@ load_dotenv()
 async def fetch_linkedin_post_data(post_url: str) -> Output:
     linkedin_api_key = os.getenv("LINKEDIN_API_KEY")
     
-    if not linkedin_api_key:
-        raise HTTPException(status_code=500, detail="LinkedIn API Key not found in environment variables.")
+    if not linkedin_api_key or not linkedin_api_secret:
+        raise HTTPException(status_code=500, detail="LinkedIn API credentials not found in environment variables.")
 
     headers = {
         "Authorization": f"Bearer {linkedin_api_key}",
@@ -27,9 +27,9 @@ async def fetch_linkedin_post_data(post_url: str) -> Output:
             response = await client.get(f"https://api.linkedin.com/v2/posts/{post_id}/likesAndShares", headers=headers)
         # Raise an exception for 4xx or 5xx status codes
         response.raise_for_status()
-        data = response.json()
-        likes = data.get('likes', 0) # extract likes from the data
-        reposts = data.get('shares', 0) #extract post from the data
+        data = await response.json()
+        likes = int(data.get('likes', 0)) # extract likes from the data
+        reposts = int(data.get('shares', 0)) #extract post from the data
         return Output(likes=likes, reposts=reposts) # return output 
 
     except httpx.HTTPStatusError as e:
@@ -38,10 +38,3 @@ async def fetch_linkedin_post_data(post_url: str) -> Output:
     except Exception as e:
         # Catch all other exceptions
         raise HTTPException(status_code=500, detail=f"An unexpected error occurred: {str(e)}")
-
-async def fetch_linkedin_post_data(post_url: str) -> Output:  
-    linkedin_api_key = os.getenv("LINKEDIN_API_KEY")  
-    headers = {  
-        "Authorization": f"Bearer {linkedin_api_key}",  
-        "Content-Type": "application/json"  
-    }  

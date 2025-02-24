@@ -1,6 +1,7 @@
 from fastapi import FastAPI, HTTPException 
 from fastapi.responses import JSONResponse  
 import requests   
+import logging
 from app.linkedin import fetch_linkedin_post_data  
 from app.schemas import Settings, Output 
 from app.config import LOAD_ENV  
@@ -11,6 +12,7 @@ from app.integration_info import integration_data  # Import the integration data
 
 app = FastAPI()  
 
+logging.basicConfig(level=logging.INFO)
 
 # Add CORS middleware  
 origins = [  
@@ -53,9 +55,12 @@ async def fetch_stats(settings: Settings):
 
     try:  
         output = await fetch_linkedin_post_data(settings.post_url)  
+        logging.info(f"Fetched stats: {output}")
         return output  
     except ValueError as e:  
         raise HTTPException(status_code=500, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Unexpected error: {str(e)}")
 
 
 # Function to send a notification to Telex webhook
@@ -63,27 +68,19 @@ def notification(post_stats: Output):
     """
     Send a notification to the Telex webhook with the provided metrics data.
     """
-    url = "https://ping.telex.im/v1/webhooks/0195058a-1518-764a-9db0-506a93c57aca"
+    url = "https://ping.telex.im/v1/webhooks/019537e2-5c8a-7fec-8994-7cf6ad7bb554"
     payload = {
         "event_name": "LinkedIn Post Monitoring",
         "message": f"Likes: {post_stats.likes}, Reposts: {post_stats.reposts}",
         "status": "success",
     }
+    
     try:
-        # Send the POST request to Telex webhook
-        response = requests.post(
-            url,
-            json=payload,
-            headers={
-                "Accept": "application/json",
-                "Content-Type": "application/json"
-            }
-        )
-        # Check if the response is successful (status code 200)
-        if response.status_code != 200:
-            raise HTTPException(status_code=500, detail="Failed to send notification to Telex webhook")     
-        return response.json()  # Return the response content
+        response = requests.post(url, json=payload, headers={"Accept": "application/json", "Content-Type": "application/json"})
+        response.raise_for_status()  # This will throw an exception for 4xx or 5xx status codes
+        logging.info(f"Notification sent successfully: {response.json()}")
     except requests.exceptions.RequestException as e:
+        logging.error(f"Error sending notification: {e}")
         raise HTTPException(status_code=500, detail=f"Error sending notification: {e}")
 
 
