@@ -67,16 +67,9 @@ integration_data = {
                 "required": True,  
                 "default": "Low",  
                 "options": ["High", "Medium", "Low"]  
-            },  
-            {  
-                "label": "Notify Users",  
-                "type": "multi-checkbox",  
-                "required": True,  
-                "default": "User-1",  
-                "options": ["User-1", "User-2", "User-3", "User-4"]  
-            }  
+            },   
         ],  
-        "tick_url": "https://dukpe.pythonanywhere.com/tick",  
+        "tick_url": "https://hngx-stage3-telex-integration-linkedin-ac8r8216x.vercel.app/tick",  
         "target_url": ""  
     }  
 }
