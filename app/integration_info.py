@@ -69,7 +69,7 @@ integration_data = {
                 "options": ["High", "Medium", "Low"]  
             },   
         ],  
-        "tick_url": "https://hngx-stage3-telex-integration-linkedin.vercel.app//tick",  
+        "tick_url": "https://hngx-stage3-telex-integration-linkedin.vercel.app/tick",  
         "target_url": ""  
     }  
 }
