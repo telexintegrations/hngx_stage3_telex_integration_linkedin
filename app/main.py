@@ -39,6 +39,10 @@ load_dotenv()
 LINKEDIN_API_KEY = os.getenv("LINKEDIN_API_KEY")  
 LINKEDIN_API_SECRET = os.getenv("LINKEDIN_API_SECRET") 
 
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+
+# This can be in your callback where the OAuth token is retrieved
 @app.get("/oauth/callback")
 async def oauth_callback(code: str):
     """
@@ -47,21 +51,24 @@ async def oauth_callback(code: str):
     token_url = "https://www.linkedin.com/oauth/v2/accessToken"
     data = {
         "grant_type": "authorization_code",
-        "code": code,  # The code passed by LinkedIn
+        "code": code,
         "redirect_uri": "https://hngx-stage3-telex-integration-linkedin.vercel.app/oauth/callback",  
-        "client_id": os.getenv("LINKEDIN_API_KEY"),  # LinkedIn app's client ID
-        "client_secret": os.getenv("LINKEDIN_API_SECRET"),  # LinkedIn app's client secret
+        "client_id": os.getenv("LINKEDIN_API_KEY"),
+        "client_secret": os.getenv("LINKEDIN_API_SECRET"),
     }
-    # Send the POST request to LinkedIn's token endpoint
+    logging.info(f"OAuth callback received, exchanging code: {code}")
     async with httpx.AsyncClient() as client:
         response = await client.post(token_url, data=data)
     if response.status_code == 200:
         token_data = response.json()
         access_token = token_data.get("access_token")
-        # Store the access token in session, database, or cache for future use
+        
+        global access_token_store
+        access_token_store = access_token
+        logging.info(f"Successfully fetched access token: {access_token[:10]}...")  # Log part of the token for security reasons
         return {"message": "OAuth authorization successful!", "access_token": access_token}
     else:
-        # Handle errors if the token exchange fails
+        logging.error(f"Error exchanging authorization code: {response.text}")
         return {"message": "Error exchanging authorization code", "error": response.text}
 
 @app.get("/")  

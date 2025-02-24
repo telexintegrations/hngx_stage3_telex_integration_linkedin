@@ -8,30 +8,38 @@ from fastapi import HTTPException
 load_dotenv()  
 
 # Asynchronous function to fetch LinkedIn post data
-async def fetch_linkedin_post_data(post_url: str) -> Output:
+logging.basicConfig(level=logging.INFO)
 
+async def fetch_linkedin_post_data(post_url: str) -> Output:
+    global access_token_store
+
+    if not access_token_store:
+        logging.error("Access token is missing or invalid.")
+        raise HTTPException(status_code=401, detail="Access token is missing or invalid.")
     headers = {
-        "Authorization": f"Bearer {access_token}",
+        "Authorization": f"Bearer {access_token_store}",
         "Content-Type": "application/json"
     }
-    
 
-    # Extract post ID from the URL (assuming it's in the standard format)
-    post_id = post_url.split('/')[-2]  
+    # Extract post ID from the URL
+    post_id = post_url.split('/')[-2]
+    logging.info(f"Fetching data for post ID: {post_id}")
 
     try:
         # Make an asynchronous HTTP request
         async with httpx.AsyncClient() as client:
-            response = await client.get(f"https://api.linkedin.com/v2/posts/{post_id}/likesAndShares", headers=headers)
-        # Raise an exception for 4xx or 5xx status codes
+            response = await client.get(f"https://api.linkedin.com/v2/posts/{post_id}/likesAndShares", headers=headers)   
         if response.status_code == 429:
+            logging.error(f"Rate limit exceeded for LinkedIn API. Status: {response.status_code}")
             raise HTTPException(status_code=429, detail="Rate limit exceeded by LinkedIn API")
-        response.raise_for_status()
+        response.raise_for_status()  # Raise for any other errors
         data = await response.json()
-        likes = int(data.get('likes', 0)) # extract likes from the data
-        reposts = int(data.get('shares', 0)) #extract post from the data
-        return Output(likes=likes, reposts=reposts) # return output 
-
+        # Log the fetched data for debugging (be cautious of sensitive data)
+        logging.info(f"Fetched data for post: {data}")
+        likes = int(data.get('likes', 0))
+        reposts = int(data.get('shares', 0))        
+        logging.info(f"Post stats - Likes: {likes}, Reposts: {reposts}")
+        return Output(likes=likes, reposts=reposts)
     except httpx.HTTPStatusError as e:
         logging.error(f"HTTP Error: {e.response.status_code} - {e.response.text}")
         raise HTTPException(status_code=e.response.status_code, detail=f"HTTP error: {e.response.status_code} - {e.response.text}")
