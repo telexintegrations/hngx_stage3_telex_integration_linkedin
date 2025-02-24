@@ -1,5 +1,6 @@
 import os  
 import httpx  
+import logging
 from dotenv import load_dotenv  
 from .schemas import Output  
 from fastapi import HTTPException
