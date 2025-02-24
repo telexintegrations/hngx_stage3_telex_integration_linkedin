@@ -2,9 +2,9 @@ import os
 import httpx  
 import logging
 from dotenv import load_dotenv  
-from .schemas import Output  
+from app.schemas import Output  
 from fastapi import HTTPException
-from app.main import access_token_store
+from app.token_store import access_token_store
 
 load_dotenv()  
 
@@ -12,8 +12,7 @@ load_dotenv()
 logging.basicConfig(level=logging.INFO)
 
 async def fetch_linkedin_post_data(post_url: str) -> Output:
-    global access_token_store
-
+  
     if not access_token_store:
         logging.error("Access token is missing or invalid.")
         raise HTTPException(status_code=401, detail="Access token is missing or invalid.")
@@ -34,7 +33,7 @@ async def fetch_linkedin_post_data(post_url: str) -> Output:
             logging.error(f"Rate limit exceeded for LinkedIn API. Status: {response.status_code}")
             raise HTTPException(status_code=429, detail="Rate limit exceeded by LinkedIn API")
         response.raise_for_status()  # Raise for any other errors
-        data = await response.json()
+        data = response.json()
         # Log the fetched data for debugging (be cautious of sensitive data)
         logging.info(f"Fetched data for post: {data}")
         likes = int(data.get('likes', 0))
