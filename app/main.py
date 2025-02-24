@@ -11,6 +11,11 @@ from dotenv import load_dotenv
 from fastapi.middleware.cors import CORSMiddleware  
 from app.integration_info import integration_data  # Import the integration data  
 
+# Load environment variables from .env
+load_dotenv()
+
+access_token_store = None  # Initialize the token store here
+
 app = FastAPI()  
 
 logging.basicConfig(level=logging.INFO)
@@ -32,15 +37,10 @@ app.add_middleware(
     allow_headers=["*"],  # Allows all headers  
 ) 
 
-# Load environment variables from .env  
-load_dotenv()  
-
 # Access the API keys from environment variables  
 LINKEDIN_API_KEY = os.getenv("LINKEDIN_API_KEY")  
 LINKEDIN_API_SECRET = os.getenv("LINKEDIN_API_SECRET") 
 
-# Configure logging
-logging.basicConfig(level=logging.INFO)
 
 # This can be in your callback where the OAuth token is retrieved
 @app.get("/oauth/callback")
