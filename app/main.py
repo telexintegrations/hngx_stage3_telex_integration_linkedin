@@ -42,7 +42,7 @@ async def read_root():
         "message": "Post-stats-tracker for Linkedin is working!"
     }  
 
-@app.get("/integration-info")  
+@app.get("/integration.json")  
 async def get_integration_info():  
     return integration_data  # Return the integration data  
 
