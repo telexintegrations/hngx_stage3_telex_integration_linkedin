@@ -1,6 +1,7 @@
 from fastapi import FastAPI, HTTPException 
 from fastapi.responses import JSONResponse  
 import requests   
+import httpx
 import logging
 from app.linkedin import fetch_linkedin_post_data  
 from app.schemas import Settings, Output 
@@ -37,6 +38,31 @@ load_dotenv()
 # Access the API keys from environment variables  
 LINKEDIN_API_KEY = os.getenv("LINKEDIN_API_KEY")  
 LINKEDIN_API_SECRET = os.getenv("LINKEDIN_API_SECRET") 
+
+@app.get("/oauth/callback")
+async def oauth_callback(code: str):
+    """
+    LinkedIn OAuth callback endpoint to exchange the authorization code for an access token.
+    """
+    token_url = "https://www.linkedin.com/oauth/v2/accessToken"
+    data = {
+        "grant_type": "authorization_code",
+        "code": code,  # The code passed by LinkedIn
+        "redirect_uri": "https://hngx-stage3-telex-integration-linkedin.vercel.app/oauth/callback",  
+        "client_id": os.getenv("LINKEDIN_API_KEY"),  # LinkedIn app's client ID
+        "client_secret": os.getenv("LINKEDIN_API_SECRET"),  # LinkedIn app's client secret
+    }
+    # Send the POST request to LinkedIn's token endpoint
+    async with httpx.AsyncClient() as client:
+        response = await client.post(token_url, data=data)
+    if response.status_code == 200:
+        token_data = response.json()
+        access_token = token_data.get("access_token")
+        # Store the access token in session, database, or cache for future use
+        return {"message": "OAuth authorization successful!", "access_token": access_token}
+    else:
+        # Handle errors if the token exchange fails
+        return {"message": "Error exchanging authorization code", "error": response.text}
 
 @app.get("/")  
 async def read_root():  
