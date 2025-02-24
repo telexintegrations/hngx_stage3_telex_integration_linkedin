@@ -33,8 +33,8 @@ async def fetch_linkedin_post_data(post_url: str) -> Output:
         return Output(likes=likes, reposts=reposts) # return output 
 
     except httpx.HTTPStatusError as e:
-        # Handle HTTP status errors (4xx/5xx)
+        logging.error(f"HTTP Error: {e.response.status_code} - {e.response.text}")
         raise HTTPException(status_code=e.response.status_code, detail=f"HTTP error: {e.response.status_code} - {e.response.text}")
     except Exception as e:
-        # Catch all other exceptions
+        logging.error(f"Unexpected error: {str(e)}")
         raise HTTPException(status_code=500, detail=f"An unexpected error occurred: {str(e)}")
