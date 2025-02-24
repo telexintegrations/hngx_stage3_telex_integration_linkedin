@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 from app.schemas import Output  
 from fastapi import HTTPException
 from app.token_store import access_token_store
+from app.token_store import get_access_token
 
 load_dotenv()  
 
@@ -12,7 +13,9 @@ load_dotenv()
 logging.basicConfig(level=logging.INFO)
 
 async def fetch_linkedin_post_data(post_url: str) -> Output:
-  
+    
+    access_token = get_access_token()
+    
     if not access_token_store:
         logging.error("Access token is missing or invalid.")
         raise HTTPException(status_code=401, detail="Access token is missing or invalid.")
