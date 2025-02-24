@@ -26,6 +26,8 @@ async def fetch_linkedin_post_data(post_url: str) -> Output:
         async with httpx.AsyncClient() as client:
             response = await client.get(f"https://api.linkedin.com/v2/posts/{post_id}/likesAndShares", headers=headers)
         # Raise an exception for 4xx or 5xx status codes
+        if response.status_code == 429:
+            raise HTTPException(status_code=429, detail="Rate limit exceeded by LinkedIn API")
         response.raise_for_status()
         data = await response.json()
         likes = int(data.get('likes', 0)) # extract likes from the data

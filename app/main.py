@@ -60,6 +60,9 @@ async def fetch_stats(settings: Settings):
     except ValueError as e:  
         raise HTTPException(status_code=500, detail=str(e))
     except Exception as e:
+        # Log the full traceback to debug
+        import traceback
+        traceback.print_exc()
         raise HTTPException(status_code=500, detail=f"Unexpected error: {str(e)}")
 
 
