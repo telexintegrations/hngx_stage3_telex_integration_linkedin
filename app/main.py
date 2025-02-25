@@ -124,21 +124,28 @@ def notification(post_stats: Output):
         raise HTTPException(status_code=500, detail=f"Error sending notification: {e}")
 
 
-@app.post("/tick")
-async def tick(settings: Settings): 
-    try:
-        output = await fetch_stats(settings)  # Get the stats data from fetch_stats
-        # If there are any errors or warnings in the output, log them
-        if hasattr(output, 'errors') and output.errors:
-            logging.error(f"Errors in the fetched data: {output.errors}")
-            return {"status": "failure", "errors": output.errors}
-        
-    except HTTPException as e:
-        # Return the HTTP exception if one occurs
-        logging.error(f"HTTPException: {e.detail}")
-        raise e  
+@app.post("/tick")  
+async def tick(settings: Settings):   
+    try:  
+        output = await fetch_linkedin_post_data(settings.post_url)  
+        logging.info(f"Fetched stats: {output}")  
 
-    except Exception as e:
-            # Log the full error traceback for debugging
-        logging.error(f"Unexpected error occurred: {str(e)}")
-        return {"status": "failure", "error": str(e)}
+        # Prepare data to send to the return URL  
+        return_payload = {  
+            "status": "success",  
+            "data": output  
+        }  
+
+        # Sending the response to the return_url  
+        async with httpx.AsyncClient() as client:  
+            response = await client.post(settings.return_url, json=return_payload)  
+            response.raise_for_status()  # Raise error for non-2xx responses  
+
+        return {"message": "Data sent to return URL successfully."}  
+        
+    except HTTPException as e:  
+        logging.error(f"HTTPException: {e.detail}")  
+        raise e  
+    except Exception as e:  
+        logging.error(f"Unexpected error occurred: {str(e)}")  
+        return {"status": "failure", "error": str(e)}  
