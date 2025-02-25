@@ -41,7 +41,7 @@ integration_data = {
                 "label": "Post URL",  
                 "type": "text",  
                 "required": True,  
-                "default": "https://www.linkedin.com/company/center-for-epidemiological-modelling-and-analysis-cema-africa/posts?lipi=urn%3Ali%3Apage%3Ad_flagship3_feed%3BCPf5AmcIScGS6G%2BYTXsUbw%3D%3D"  
+                "default": "https://www.linkedin.com/feed/update/urn:li:activity:7300033040125169665"  
             },  
             {  
                 "label": "Update Interval",  
