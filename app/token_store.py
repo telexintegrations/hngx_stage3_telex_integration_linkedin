@@ -2,7 +2,7 @@
 import logging
 import os
 
-# Load access token from environment variable or set manually
+# Load access token from environment variable
 access_token_store = os.getenv("LINKEDIN_ACCESS_TOKEN")  # Optional: Load from .env
 
 def set_access_token(token: str):

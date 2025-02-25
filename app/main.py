@@ -10,6 +10,8 @@ import os
 from dotenv import load_dotenv  
 from fastapi.middleware.cors import CORSMiddleware  
 from app.integration_info import integration_data  # Import the integration data  
+from app.token_store import access_token_store
+from app.token_store import set_access_token 
 
 # Load environment variables from .env
 load_dotenv()
@@ -41,8 +43,6 @@ app.add_middleware(
 LINKEDIN_API_KEY = os.getenv("LINKEDIN_API_KEY")  
 LINKEDIN_API_SECRET = os.getenv("LINKEDIN_API_SECRET") 
 
-
-# This can be in your callback where the OAuth token is retrieved
 @app.get("/oauth/callback")
 async def oauth_callback(code: str):
     """
@@ -63,13 +63,17 @@ async def oauth_callback(code: str):
         token_data = response.json()
         access_token = token_data.get("access_token")
         
-        global access_token_store
-        access_token_store = access_token
-        logging.info(f"Successfully fetched access token: {access_token[:10]}...")  # Log part of the token for security reasons
-        return {"message": "OAuth authorization successful!", "access_token": access_token}
+        if access_token:
+            set_access_token(access_token)
+            logging.info(f"Successfully fetched access token: {access_token[:10]}...")  # Log part of the token for security reasons
+            return {"message": "OAuth authorization successful!", "access_token": access_token}
+        else:
+            logging.error(f"Error exchanging authorization code: {response.text}")
+            return {"message": "Error exchanging authorization code", "error": response.text}
     else:
         logging.error(f"Error exchanging authorization code: {response.text}")
         return {"message": "Error exchanging authorization code", "error": response.text}
+
 
 @app.get("/")  
 async def read_root():  
