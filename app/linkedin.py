@@ -26,7 +26,7 @@ async def fetch_linkedin_post_data(post_url: str) -> Output:
         "Content-Type": "application/json"  
     }
     # Extract post ID from the URL  
-    match = re.search(r'posts/(\d+)', post_url)  
+    match = re.search(r'activity-(\d+)', post_url)  
     post_id = match.group(1) if match else None  
     if not post_id:  
         logging.error("Invalid LinkedIn post URL provided.")  
