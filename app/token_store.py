@@ -10,9 +10,11 @@ def set_access_token(token: str):
     global access_token_store
     access_token_store = token
     logging.info("Access token successfully updated.")
-
+    
 def get_access_token():
-    """
-    Retrieve the stored access token.
-    """
+    global access_token_store
+    if access_token_store is None:
+        logging.error("Access token is not set.")
+        return None
+    logging.info(f"Retrieved access token: {access_token_store[:10]}...")  # Log partial token
     return access_token_store
