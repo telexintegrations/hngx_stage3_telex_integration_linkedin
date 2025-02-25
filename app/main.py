@@ -108,7 +108,7 @@ def notification(post_stats: Output):
     """
     Send a notification to the Telex webhook with the provided metrics data.
     """
-    url = "https://ping.telex.im/v1/webhooks/01953d7a-f6f2-747b-8198-7757a9ffac1b"
+    url = "https://ping.telex.im/v1/webhooks/01953d9d-2518-7592-ae8b-5df0310a577f"
     payload = {
         "event_name": "LinkedIn Post Monitoring",
         "message": f"Likes: {post_stats.likes}, Reposts: {post_stats.reposts}",
