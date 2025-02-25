@@ -47,7 +47,7 @@ integration_data = {
                 "label": "Update Interval",  
                 "type": "text",  
                 "required": True,  
-                "default": "*/10 * * * *"  #10mn for testing then 6hours "0 */6 * * *"  
+                "default": "*/1 * * * *"  #10mn for testing then 6hours "0 */6 * * *"  
             },  
             {  
                 "label": "LinkedIn API Key",  
