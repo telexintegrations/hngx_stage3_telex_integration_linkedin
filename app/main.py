@@ -128,16 +128,13 @@ def notification(post_stats: Output):
 async def tick(settings: Settings): 
     try:
         output = await fetch_stats(settings)  # Get the stats data from fetch_stats
-            # If there are any errors or warnings in the output, log them
+        # If there are any errors or warnings in the output, log them
         if hasattr(output, 'errors') and output.errors:
             logging.error(f"Errors in the fetched data: {output.errors}")
             return {"status": "failure", "errors": output.errors}
-        notification_response = notification(output)  # Send the notification with the fetched data
-        logging.info(f"Notification response: {notification_response}")  # Log the notification response
-        return notification_response  # Return the notification response JSON  
-
+        
     except HTTPException as e:
-            # Return the HTTP exception if one occurs
+        # Return the HTTP exception if one occurs
         logging.error(f"HTTPException: {e.detail}")
         raise e  
 
