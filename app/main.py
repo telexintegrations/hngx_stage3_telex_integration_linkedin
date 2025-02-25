@@ -138,9 +138,9 @@ async def tick(settings: Settings):
 
         # Sending the response to the return_url  
         async with httpx.AsyncClient() as client:  
-            response = await client.post(settings.return_url, json=return_payload)  
+            response = await client.post(settings.url, json=return_payload)  
             response.raise_for_status()  # Raise error for non-2xx responses  
-
+        notification(output)
         return {"message": "Data sent to return URL successfully."}  
         
     except HTTPException as e:  
