@@ -125,14 +125,22 @@ def notification(post_stats: Output):
 
 
 @app.post("/tick")
-async def tick(settings: Settings):
+async def tick(settings: Settings): 
     try:
-        # Fetch stats for the specified post URL
-        output = await fetch_stats(settings)  # Get the stats data from fetch_stats
-        # Send the notification with the metrics data (output is passed here)
-        notification(output)  # Send the notification with the fetched data
-        return output  # Return the fetched stats as the response
-    except HTTPException as e:
-        raise e  # Re-raise the HTTPException for proper status code and detail
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Internal Server Error: {str(e)}")
+            output = await fetch_stats(settings)  # Get the stats data from fetch_stats
+            # If there are any errors or warnings in the output, log them
+            if hasattr(output, 'errors') and output.errors:
+                logging.error(f"Errors in the fetched data: {output.errors}")
+                return {"status": "failure", "errors": output.errors}
+            notification(output)  # Send the notification with the fetched data
+            return output  
+
+        except HTTPException as e:
+            # Return the HTTP exception if one occurs
+            logging.error(f"HTTPException: {e.detail}")
+            raise e  
+
+        except Exception as e:
+            # Log the full error traceback for debugging
+            logging.error(f"Unexpected error occurred: {str(e)}")
+            return {"status": "failure", "error": str(e)}
