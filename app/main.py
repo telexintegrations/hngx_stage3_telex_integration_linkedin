@@ -132,8 +132,9 @@ async def tick(settings: Settings):
         if hasattr(output, 'errors') and output.errors:
             logging.error(f"Errors in the fetched data: {output.errors}")
             return {"status": "failure", "errors": output.errors}
-        notification(output)  # Send the notification with the fetched data
-        return output  
+        notification_response = notification(output)  # Send the notification with the fetched data
+        logging.info(f"Notification response: {notification_response}")  # Log the notification response
+        return notification_response  # Return the notification response JSON  
 
     except HTTPException as e:
             # Return the HTTP exception if one occurs
